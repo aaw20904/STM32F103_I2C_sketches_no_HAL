@@ -1,3 +1,5 @@
+//Author Andrii Androsovych
+//NOTE: These sketches was developed for well knkwn STM32F103 MCU
 ///indexes pointers to arrays
 volatile uint16_t i2cRxSlaveIndex=0;
 volatile uint16_t i2cTxSlaveIndex=0;
