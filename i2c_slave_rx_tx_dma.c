@@ -52,11 +52,11 @@ void wrp_i2c_slave_init_DMA ( wrp_i2c_slave_header* header) {
 	///========DMA====RX channel======
 	//Rx channel disable firstly
 	header->dmaRxChanel->CCR &= ~DMA_CCR_EN;
-	/*DIR=0(read from periph),
-	MSIZE, PSIZE=0 (1 byte),
-	MINC=1, (increment memory),
-	PINS=0 (NO periph. increment),
-	TCIE=1 (transfer complete interrupt)*/
+		/*DIR=0(read from periph),
+		MSIZE, PSIZE=0 (1 byte),
+		MINC=1, (increment memory),
+		PINS=0 (NO periph. increment),
+		TCIE=1 (transfer complete interrupt)*/
 	header->dmaRxChanel->CCR = DMA_CCR_MINC|DMA_CCR_TCIE;
      //packet length
 	header->dmaRxChanel->CNDTR = header->i2cSlaveRxPacketLength;
@@ -160,34 +160,35 @@ void DMA1_Channel7_IRQHandler(void)
 }
 
 ///--------I2C-----slave-------------handlers----
-
-void I2C1_EV_IRQHandler(void)
-{
-  
+void I2C1_EV_IRQHandler (void) {
 	uint8_t tempVar;
   //SLAVE
 	if (i2cSlaveHeader.hDevice->SR1 & I2C_SR1_ADDR) {
-      //Address sent (master mode)/matched (slave mode)
-       //clear flag
-		tempVar = i2cSlaveHeader.hDevice->SR2;//clear ADDR flag
-		//disable intrerrupts until DMA transaction has finished
-		 i2cSlaveHeader.hDevice->CR2 &= ~I2C_CR2_ITEVTEN;
+		        //Address sent (master mode)/matched (slave mode)
+		       //clear flag
+			tempVar = i2cSlaveHeader.hDevice->SR2;//clear ADDR flag
+			  //disable intrerrupts until DMA transaction has finished
+			  //i2cSlaveHeader.hDevice->CR2 &= ~I2C_CR2_ITEVTEN;
+			I2C1->CR2 &= ~I2C_CR2_ITEVTEN;
+
 		if (i2cSlaveHeader.hDevice->SR2 & I2C_SR2_TRA) {
-			///slave transmitter mode
-			GPIOB->BSRR = GPIO_BSRR_BS14; //turn led on Tx (ptional)
-			//restore data length
-			i2cSlaveHeader.dmaTxChanel->CNDTR = i2cSlaveHeader.i2cSlaveTxPacketLength;
-			//start DMA Tx
-			i2cSlaveHeader.dmaTxChanel->CCR |= DMA_CCR_EN;
+				  ///slave transmitter mode
+				GPIOB->BSRR = GPIO_BSRR_BS14; //turn led on Tx (ptional)
+				  //restore data length
+				i2cSlaveHeader.dmaTxChanel->CNDTR = i2cSlaveHeader.i2cSlaveTxPacketLength;
+				  //start DMA Tx
+				i2cSlaveHeader.dmaTxChanel->CCR |= DMA_CCR_EN;
 		} else {
-			//slave receiver mode
-			//restore data length
-			 i2cSlaveHeader.dmaRxChanel->CNDTR = i2cSlaveHeader.i2cSlaveRxPacketLength;
-			//start DMA Rx
-		   i2cSlaveHeader.dmaRxChanel->CCR |= DMA_CCR_EN;
-		   //turn on led Rx (optional)
-			GPIOB->BSRR = GPIO_BSRR_BS14;
+					//slave receiver mode
+					//restore data length
+				 i2cSlaveHeader.dmaRxChanel->CNDTR = i2cSlaveHeader.i2cSlaveRxPacketLength;
+				   //start DMA Rx
+				 i2cSlaveHeader.dmaRxChanel->CCR |= DMA_CCR_EN;
+				  //turn on led Rx (optional)
+				GPIOB->BSRR = GPIO_BSRR_BS14;
 		}
+
+	}
 
 	if (i2cSlaveHeader.hDevice->SR1 & I2C_SR1_STOPF) {
      //Stop detection receiver (slave mode)
@@ -196,7 +197,7 @@ void I2C1_EV_IRQHandler(void)
 
 		GPIOB->BSRR = GPIO_BSRR_BR14; //turn LED off
 	}
- 
+
 }
 
  ///I2C errors handler
