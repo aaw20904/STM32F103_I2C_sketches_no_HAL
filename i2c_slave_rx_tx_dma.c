@@ -169,7 +169,7 @@ void I2C1_EV_IRQHandler (void) {
 			tempVar = i2cSlaveHeader.hDevice->SR2;//clear ADDR flag
 			  //disable intrerrupts until DMA transaction has finished
 			  //i2cSlaveHeader.hDevice->CR2 &= ~I2C_CR2_ITEVTEN;
-			I2C1->CR2 &= ~I2C_CR2_ITEVTEN;
+			i2cSlaveHeader.hDevice->CR2 &= ~I2C_CR2_ITEVTEN;
 
 		if (i2cSlaveHeader.hDevice->SR2 & I2C_SR2_TRA) {
 				  ///slave transmitter mode
