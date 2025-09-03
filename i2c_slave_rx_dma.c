@@ -95,6 +95,7 @@ void main(){
 	  //when busy bug, clean it by reset:
   		I2C1->CR1 |= I2C_CR1_SWRST;
 		HAL_Delay(10);
+	  I2C1->CR1 = 0;
 		MX_I2C1_Init();
 		wrp_i2c_slave_rx_init_DMA(&i2cSlaveHeader);
    }
