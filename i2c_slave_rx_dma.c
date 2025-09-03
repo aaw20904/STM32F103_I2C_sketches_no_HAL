@@ -96,7 +96,8 @@ void main(){
   		I2C1->CR1 |= I2C_CR1_SWRST;
 		HAL_Delay(10);
 	  I2C1->CR1 = 0;
-		MX_I2C1_Init();
+	  I2C1->CCR = 0xa0; //ATTENTION! data from LL initializer
+      I2C1->TRISE = 0x21; //ATTENTION! data from LL initialyzer
 		wrp_i2c_slave_rx_init_DMA(&i2cSlaveHeader);
    }
   //7) Do any actions - all the data will be in DMA RAM buffers 
