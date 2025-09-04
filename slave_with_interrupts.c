@@ -1,6 +1,10 @@
 //Author: Anrii Androsovych
 //NOTE: I2C slave runs in Rx and Tx modes
-///------------MAIN.h----------------------
+/*
+
+█▀▄▀█ ▄▀█ █ █▄░█ ░ █░█
+█░▀░█ █▀█ █ █░▀█ ▄ █▀█
+*/
 typedef   struct {
 	 I2C_TypeDef * hDevice;
 	  uint16_t i2cSlaveRxPacketLength;
@@ -19,7 +23,11 @@ typedef   struct {
 
 void i2c_usr_slave_init (wrp_i2c_slave_header*   header);
 
-//MAIN.C-------------------------
+/*
+
+█▀▄▀█ ▄▀█ █ █▄░█ ░ █▀▀
+█░▀░█ █▀█ █ █░▀█ ▄ █▄▄
+*/
 volatile wrp_i2c_slave_header i2cSlaveHeader;
 
 volatile uint8_t i2cRxSlaveBuffer[260];
@@ -71,15 +79,22 @@ void i2c_usr_slave_init (wrp_i2c_slave_header*   header) {
         		I2C1->CR1 |= I2C_CR1_SWRST;
       		HAL_Delay(10);
 			 I2C1->CR1  = 0;
-      		 I2C1->CCR = 0xa0; //ATTENTION! data from LL initializer
-        	 I2C1->TRISE = 0x21; //ATTENTION! data from LL initialyzer
+      		  //NOTE: you can call here the the function  LL_I2C_Init(I2C_TypeDef *I2Cx, LL_I2C_InitTypeDef *I2C_InitStruct);
+				//insted of the three next steps - it is inside the MX_I2C2_Init() or MX_I2C1_Init function.
+				I2C1->CCR = 0xa0; //ATTENTION! data from LL initializer
+				I2C1->TRISE = 0x21; //ATTENTION! data from LL initialyzer
+				I2C1->CR2 = 0x20;//ATTENTION! data from LL initialyzer
       		i2c_usr_slave_init(&i2cSlaveHeader);
          }
 
 	  
   }
 
-///-------------INTERRUPTS------------------------------
+/*
+
+█ █▄░█ ▀█▀ █▀▀ █▀█ █▀█ █░█ █▀█ ▀█▀ █▀ ░ █▀▀
+█ █░▀█ ░█░ ██▄ █▀▄ █▀▄ █▄█ █▀▀ ░█░ ▄█ ▄ █▄▄
+*/
 void I2C1_EV_IRQHandler(void)
 {
 	uint8_t tempVar;
