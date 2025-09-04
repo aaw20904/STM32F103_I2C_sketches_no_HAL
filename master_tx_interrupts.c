@@ -1,4 +1,8 @@
-//--------MAIN.H--------
+/*
+	
+█▀▄▀█ ▄▀█ █ █▄░█ ░ █░█
+█░▀░█ █▀█ █ █░▀█ ▄ █▀█
+*/
 typedef   struct {
 	 I2C_TypeDef * hDevice;
 	  uint16_t i2cMasterRxPacketLength;
@@ -18,7 +22,11 @@ typedef   struct {
 void i2c_usr_master_init(wrp_i2c_master_header* header);
 
 
-//----------------MAIN.C----------
+/*
+
+█▀▄▀█ ▄▀█ █ █▄░█ ░ █▀▀
+█░▀░█ █▀█ █ █░▀█ ▄ █▄▄
+**/
 volatile wrp_i2c_master_header i2cMasterHeader;
 
 volatile uint8_t i2cTxMasterBuffer[256]={
@@ -61,8 +69,11 @@ main(){
         	 I2C2->CR1 |= I2C_CR1_SWRST;
         	 HAL_Delay(10);
         	 I2C2->CR1 = 0;
-        	 I2C2->CCR = 0xa0; //ATTENTION! data from LL initializer
-        	 I2C2->TRISE = 0x21; //ATTENTION! data from LL initialyzer
+        	/NOTE: you can call here the  function  LL_I2C_Init(I2C_TypeDef *I2Cx, LL_I2C_InitTypeDef *I2C_InitStruct);
+		       //insted of the three next steps - it is inside the MX_I2C2_Init() or MX_I2C1_Init function.
+			  I2C2->CCR = 0xa0; //ATTENTION! data from LL initializer
+		      I2C2->TRISE = 0x21; //ATTENTION! data from LL initialyzer
+			  I2C2->CR2 = 0x20;//ATTENTION! data from LL initialyzer
         	 i2c_usr_master_init(&i2cMasterHeader);
         }
 
@@ -70,8 +81,10 @@ main(){
          I2C2->CR1 |= I2C_CR1_START;
 }
 
-
-///------------INTERRUPTS----------
+/*
+█ █▄░█ ▀█▀ █▀▀ █▀█ █▀█ █░█ █▀█ ▀█▀ █▀ ░ █▀▀
+█ █░▀█ ░█░ ██▄ █▀▄ █▀▄ █▄█ █▀▀ ░█░ ▄█ ▄ █▄▄
+*/
 
 extern volatile wrp_i2c_master_header i2cMasterHeader;
 extern volatile uint8_t i2cTxMasterBuffer;
