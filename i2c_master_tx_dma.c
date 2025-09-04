@@ -1,4 +1,4 @@
-
+//Author : Andrii Androsovych
 /*
 █▀▄▀█ ▄▀█ █ █▄░█ ░ █░█
 █░▀░█ █▀█ █ █░▀█ ▄ █▀█
@@ -19,7 +19,7 @@ typedef   struct {
 	  DMA_Channel_TypeDef * dmaTxChanel;
 
 } wrp_i2c_master_header;
-void i2c_usr_master_init_DMA(wrp_i2c_master_header* header);
+void i2c_usr_master_tx_init_DMA(wrp_i2c_master_header* header);
 /*
 
 █▀▄▀█ ▄▀█ █ █▄░█ ░ █▀▀
@@ -28,31 +28,21 @@ void i2c_usr_master_init_DMA(wrp_i2c_master_header* header);
 volatile wrp_i2c_master_header i2cMasterHeader;
 
 //2) Implementation of the initializer
-void wrp_i2c_slave_tx_init_DMA ( wrp_i2c_slave_header* header) {
-     //====DMA====TX channel======
-	header->dmaTxChanel->CCR &= ~DMA_CCR_EN;
-     	/*DIR=1(read from memory),
-     	MSIZE, PSIZE=0 (1 byte),
-     	MINC=1, (increment memory),
-     	PINC=0 (NO periph. increment),
-     	TCIE=1 (transfer complete interrupt)*/
-	header->dmaTxChanel->CCR = DMA_CCR_DIR|DMA_CCR_MINC|DMA_CCR_MINC|DMA_CCR_TCIE;
-        //packet length
-	header->dmaTxChanel->CNDTR = header->i2cSlaveTxPacketLength;
-      //addresses of peripherial and memory
-	header->dmaTxChanel->CPAR = &header->hDevice->DR;
-	header->dmaTxChanel->CMAR = header->i2cTxSlaveBuffer;
-     ///----------I2C---initialization
+void i2c_usr_master_init_DMA(wrp_i2c_master_header* header){
+	//DMA init
+	 header->dmaTxChanel->CCR |= DMA_CCR_MINC|DMA_CCR_DIR|DMA_CCR_TCIE;
+	 header->dmaTxChanel->CNDTR = header->i2cMasterTxPacketLength;
+	 header->dmaTxChanel->CPAR = &header->hDevice->DR;
+	 header->dmaTxChanel->CMAR = header->i2cTxMasterBuffer;
 	 //enable own address
-	header->hDevice->CR1 &= ~I2C_CR1_PE;
-	 //enable DMA
-	header->hDevice->CR2 |= I2C_CR2_DMAEN;
-	header->hDevice->OAR1 = (header->i2cSlaveAddress << 1);
-	header->hDevice->CR1 |=  I2C_CR1_ACK;
-	 //enable event interrupts and bufer interrupts
-	header->hDevice->CR2 |= I2C_CR2_ITEVTEN|I2C_CR2_ITBUFEN|I2C_CR2_ITERREN;
+	 header->hDevice->CR1 &= ~I2C_CR1_PE;
+	  //own address equals zero - master
+	 header->hDevice->CR1 |=  I2C_CR1_ACK;
+	 //enable event interrupts and bufer interrupts//enable DMA
+	 header->hDevice->CR2 |= I2C_CR2_ITEVTEN|I2C_CR2_ITERREN|I2C_CR2_DMAEN;
 	  //turn I2C on, enable acknowledge
-	header->hDevice->CR1 |= I2C_CR1_PE|I2C_CR1_ACK;
+	 header->hDevice->CR1 |= I2C_CR1_PE|I2C_CR1_ACK;
+
 }
 
 main(){
@@ -71,7 +61,7 @@ main(){
       i2cMasterHeader.dmaTxChanel = DMA1_Channel4;
   
         //init a master (RCC, GPIO initialization must be done before)
-        i2c_usr_master_init_DMA(&i2cMasterHeader);
+        i2c_usr_master_tx_init_DMA(&i2cMasterHeader);
         if (I2C2->SR2 & I2C_SR2_BUSY) {
         	//when busy bug, clean it by reset:
         	 I2C2->CR1 |= I2C_CR1_SWRST;
@@ -82,7 +72,7 @@ main(){
         	 I2C2->CR2 = 0x20;//ATTENTION! data from LL initialyzer
         	 I2C2->CCR = 0xa0; //ATTENTION! data from LL initialyzer
         	 I2C2->TRISE = 0x21;//ATTENTION! data from LL initialyzer
-        	 i2c_usr_master_init_DMA(&i2cMasterHeader);
+        	 i2c_usr_master_tx_init_DMA(&i2cMasterHeader);
         }
   
 }
