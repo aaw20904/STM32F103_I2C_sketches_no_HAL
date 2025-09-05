@@ -159,23 +159,29 @@ void I2C2_ER_IRQHandler(void)
 				//clear flag
 				i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_AF;
 				//3)Send STOP
-									i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
+					i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
 				//GPIOB->BSRR = GPIO_BSRR_BR14;
 			}
 
 			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_ARLO){
 				//clear flag arbitration lost
 				i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_ARLO;
+				//3)Send STOP
+				i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
 			}
 
 			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_BERR){
 				//clear flag bus error
 				I2C2->SR1 &= ~I2C_SR1_BERR;
+				//3)Send STOP
+				i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
 			}
 
 			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_OVR){
 				//clear flag overrun/underrun
 				I2C2->SR1 &= ~I2C_SR1_OVR;
+				//3)Send STOP
+				i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
 			}
   /* USER CODE END I2C2_ER_IRQn 0 */
 
