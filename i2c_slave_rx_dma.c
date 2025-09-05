@@ -179,7 +179,7 @@ void I2C1_ER_IRQHandler(void)
   /* USER CODE BEGIN I2C1_ER_IRQn 1 */
     //save error states inside a global state variable
         i2cSlaveHeader.i2cSlaveErrorFlags = i2cSlaveHeader.hDevice->SR2;
-        i2cSlaveHeader.i2cSlaveErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR);
+        i2cSlaveHeader.i2cSlaveErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR|I2C_SR1_AF);
     	if (i2cSlaveHeader.hDevice->SR1 & I2C_SR1_AF) {
     			//end byte  of the slave transmitter (the last byte NACKed)
     			//clear flag
