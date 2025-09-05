@@ -76,7 +76,9 @@ main(){
 			  I2C2->CR2 = 0x20;//ATTENTION! data from LL initialyzer
         	 i2c_usr_master_init(&i2cMasterHeader);
         }
-
+	
+   //NOTE: To run transaction, only set the START bit in CR1 register.
+	//All the parameters will be given from a header-structure
   //start transmitting
          I2C2->CR1 |= I2C_CR1_START;
 }
