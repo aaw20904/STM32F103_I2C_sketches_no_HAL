@@ -46,7 +46,7 @@ void i2c_usr_master_init_DMA(wrp_i2c_master_header* header){
 }
 
 main(){
-
+  //You must initialize clocks for peripherial firstly
  //master initialization
       i2cMasterHeader.dmaRxChanel = 0;
       i2cMasterHeader.dmaTxChanel = 0;
@@ -74,6 +74,9 @@ main(){
         	 I2C2->TRISE = 0x21;//ATTENTION! data from LL initialyzer
         	 i2c_usr_master_tx_init_DMA(&i2cMasterHeader);
         }
+	
+	//NOTE: To run transaction, only set the START bit in CR1 register.
+	//All the parameters will be given from a header-structure
   
 }
 
@@ -85,7 +88,7 @@ main(){
 void DMA1_Channel4_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
-	 //I2C Transmitter DMA channel
+	 /++++++++++/I2C Master Transmitter DMA channel+++++++++++++++++++
 		if(DMA1->ISR & DMA_ISR_TCIF4){
 	       //disable channel Tx
 			i2cMasterHeader.dmaTxChanel->CCR &= ~DMA_CCR_EN;
