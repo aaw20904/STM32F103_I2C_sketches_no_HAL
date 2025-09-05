@@ -150,29 +150,33 @@ void I2C2_EV_IRQHandler(void)
 void I2C2_ER_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C2_ER_IRQn 0 */
-	i2cMasterHeader.i2cMasterErrorFlags = i2cMasterHeader.hDevice->SR2;
-	i2cMasterHeader.i2cMasterErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR|I2C_SR1_AF);
-		if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_AF) {
-			//end byte  of the slave transmitter (the last byte NACKed)
-			//clear flag
-			i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_AF;
-			//GPIOB->BSRR = GPIO_BSRR_BR14;
-		}
+	//save flags
+	i2cMasterHeader.i2cMasterErrorFlags = i2cMasterHeader.hDevice->SR1;
+		i2cMasterHeader.i2cMasterErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR|I2C_SR1_AF);
+			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_AF) {
+				//end byte  of the slave transmitter (the last byte NACKed)
 
-		if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_ARLO){
-			//clear flag arbitration lost
-			i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_ARLO;
-		}
+				//clear flag
+				i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_AF;
+				//3)Send STOP
+									i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
+				//GPIOB->BSRR = GPIO_BSRR_BR14;
+			}
 
-		if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_BERR){
-			//clear flag bus error
-			I2C2->SR1 &= ~I2C_SR1_BERR;
-		}
+			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_ARLO){
+				//clear flag arbitration lost
+				i2cMasterHeader.hDevice->SR1 &= ~I2C_SR1_ARLO;
+			}
 
-		if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_OVR){
-			//clear flag overrun/underrun
-			I2C2->SR1 &= ~I2C_SR1_OVR;
-		}
+			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_BERR){
+				//clear flag bus error
+				I2C2->SR1 &= ~I2C_SR1_BERR;
+			}
+
+			if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_OVR){
+				//clear flag overrun/underrun
+				I2C2->SR1 &= ~I2C_SR1_OVR;
+			}
   /* USER CODE END I2C2_ER_IRQn 0 */
 
   /* USER CODE BEGIN I2C2_ER_IRQn 1 */
