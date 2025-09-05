@@ -150,7 +150,7 @@ void I2C2_EV_IRQHandler (void) {
 void I2C2_ER_IRQHandler (void) {
   /* USER CODE BEGIN I2C2_ER_IRQn 0 */
 	i2cMasterHeader.i2cMasterErrorFlags = i2cMasterHeader.hDevice->SR2;
-	i2cMasterHeader.i2cMasterErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR);
+	i2cMasterHeader.i2cMasterErrorFlags &= (I2C_SR1_BERR|I2C_SR1_ARLO|I2C_SR1_OVR|I2C_SR1_AF);
 		if (i2cMasterHeader.hDevice->SR1 & I2C_SR1_AF) {
 			//end byte  of the slave transmitter (the last byte NACKed)
 			//clear flag
