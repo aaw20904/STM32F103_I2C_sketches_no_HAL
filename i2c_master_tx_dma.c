@@ -46,7 +46,7 @@ void i2c_usr_master_init_DMA(wrp_i2c_master_header* header){
 }
 
 main(){
-  //You must initialize clocks for peripherial firstly
+  //You must initialize clocks, GPIOs for peripherial by LL init functions (or manual) firstly 
  //master initialization
       i2cMasterHeader.dmaRxChanel = 0;
       i2cMasterHeader.dmaTxChanel = 0;
