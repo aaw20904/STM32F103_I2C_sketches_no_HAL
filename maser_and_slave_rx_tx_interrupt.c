@@ -134,7 +134,7 @@ main() {
          }
   
 	//init a master (RCC, GPIO initialization must be done before)
-			i2c_usr_master_init(&i2cMasterHeader);
+			i2c_usr_master_rx_tx_init(&i2cMasterHeader);
 			if (I2C2->SR2 & I2C_SR2_BUSY) {
 				//when the busy bug, clean it by reset:
 				 I2C2->CR1 |= I2C_CR1_SWRST;
@@ -145,7 +145,7 @@ main() {
 				  I2C2->CCR = 0xa0; //ATTENTION! data from LL initializer
 				  I2C2->TRISE = 0x21; //ATTENTION! data from LL initialyzer
 				  I2C2->CR2 = 0x20;//ATTENTION! data from LL initialyzer
-				 i2c_usr_master_init(&i2cMasterHeader);
+				 i2c_usr_master_rx_tx_init(&i2cMasterHeader);
 			}
 
   /*
