@@ -89,6 +89,7 @@ volatile uint8_t i2cTxMasterBuffer[256]={
 
 
 main() {
+	  //You must initialize clocks, GPIOs for peripherial by LL init functions (or manual) firstly 
  /*3) Initialize an instance of a structure,
    these values will be used in initialization and inside interrupts
    to restore options in DMA after transactions*/
