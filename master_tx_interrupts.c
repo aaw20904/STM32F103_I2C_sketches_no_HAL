@@ -119,7 +119,7 @@ void I2C2_EV_IRQHandler(void)
 	     ///Data register empty (transmitters)
 			//interrupt also fires firstly when the address has been sent
 			//and affer each byte
-		if (i2cMasterHeader.i2cTxMasterIndex > i2cMasterHeader.i2cMasterTxPacketLength) {
+		if (i2cMasterHeader.i2cTxMasterIndex >= i2cMasterHeader.i2cMasterTxPacketLength) {
 			//when the last byte of a packet
 			//generate STOP condition
 			i2cMasterHeader.hDevice->CR1 |= I2C_CR1_STOP;
