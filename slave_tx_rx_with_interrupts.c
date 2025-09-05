@@ -57,7 +57,7 @@ void i2c_usr_slave_init (wrp_i2c_slave_header*   header) {
 	 header->hDevice->CR1 |= I2C_CR1_PE|I2C_CR1_ACK;
 }
   main(){
-
+        //You must initialize clocks, GPIOs for peripherial by LL init functions (or manual) firstly 
 	  //init structure
 	    i2cSlaveHeader.hDevice = I2C1;  //device
       i2cSlaveHeader.i2cRxSlaveBuffer = i2cRxSlaveBuffer;  //Rx bufer
@@ -69,7 +69,7 @@ void i2c_usr_slave_init (wrp_i2c_slave_header*   header) {
       i2cSlaveHeader.dmaRxChanel = 0;
       i2cSlaveHeader.dmaTxChanel = 0;
 	  
-      ///initialization RCC clocks, GPIOs  of I2C  by the LL drivers
+       
 	  //5) Init   slave I2C ind Rx and Tx modes:
       i2c_usr_slave_init(&i2cSlaveHeader);
 	  
